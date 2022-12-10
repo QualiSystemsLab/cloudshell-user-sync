@@ -1,0 +1,37 @@
+name: Lint and Test
+
+on:
+  pull_request:
+      branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo Action
+      uses: actions/checkout@v3
+      with:
+        persist-credentials: true
+    - name: Set up Python 🐍
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+    - name: install ALL dependencies 👷
+      run: |
+        pip install -U -r requirements-dev.txt
+        pip install -U -r requirements.txt
+        pip install .
+    - name: Check iSort Formating ✅
+      run: |
+        isort src --check
+    - name: Check Black Formating ✅
+      run: |
+        black src --check
+    - name: Flake8 Linter ✅
+      run: |
+        flake8 src
+    - name: Pylint Linter ✅
+      run: |
+        pylint src

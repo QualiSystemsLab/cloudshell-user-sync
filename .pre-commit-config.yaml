@@ -1,0 +1,35 @@
+default_language_version:
+  python: python3.9
+repos:
+  # ISORT
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.4.2
+    hooks:
+      - id: isort
+        args: []
+
+  # BLACK
+  - repo: https://github.com/python/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        args: []
+
+  # FLAKE8
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.3
+    hooks:
+      - id: flake8
+        additional_dependencies: []
+        args: []
+
+  # PYLINT
+  # See https://stackoverflow.com/questions/61238318/pylint-and-pre-commit-hook-unable-to-import/61238571#61238571
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [ python ]
+        args: []

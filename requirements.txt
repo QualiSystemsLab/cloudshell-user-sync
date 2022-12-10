@@ -1,0 +1,4 @@
+cloudshell-automation-api
+ldap3
+dacite
+pywin32
