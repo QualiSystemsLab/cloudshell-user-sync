@@ -4,18 +4,18 @@ from typing import List
 
 @dataclass
 class CloudshellDetails:
-    server: str
     user: str
     password: str
-    domain: str
+    server: str = "localhost"
+    domain: str = "Global"
 
 
 @dataclass
 class LdapDetails:
-    server: str
     user_cn: str
     password: str
-    base_dn: str
+    server: str = "localhost"
+    base_dn: str = "DC=corp,DC=example,DC=com"
 
 
 @dataclass
@@ -24,12 +24,19 @@ class LdapGroupsMapping:
     cloudshell_groups: List[str]
 
 
+@dataclass
+class ServiceConfig:
+    job_frequency_seconds: int = 120
+
+
 # this represents the user json structure, to be combined with keyring credential data
 @dataclass
 class UserJsonConfig:
     cs_server: str
     ldap_server: str
     ldap_mappings: List[LdapGroupsMapping]
+    service_config: ServiceConfig
+    ldap_base_dn: str = "DC=corp,DC=example,DC=com"
 
 
 # this is internal data model
@@ -38,3 +45,4 @@ class SyncConfig:
     cloudshell_details: CloudshellDetails
     ldap_details: LdapDetails
     ldap_mappings: List[LdapGroupsMapping]
+    service_config: ServiceConfig

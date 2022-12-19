@@ -1,5 +1,6 @@
 import click
 import pkg_resources
+from cloudshell_user_sync.commands import sync_groups
 
 
 @click.group()
@@ -14,13 +15,15 @@ def version():
 
 
 @cli.command()
-def run(name, path):
+def run():
     """Run Sync Groups Command"""
-    pass
+    click.echo("Starting User Sync...")
+    sync_groups.sync_groups_flow()
+    click.secho("Sync flow completed", fg="green")
 
 
 @cli.command()
-def service(name, path):
+def service():
     """Install User Sync Service to run automatically"""
     pass
 
