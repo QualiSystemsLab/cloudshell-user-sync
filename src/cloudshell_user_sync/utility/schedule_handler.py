@@ -5,7 +5,7 @@ import logging
 
 import schedule
 import time
-from cloudshell_user_sync.ldap_sync import run_ldap_sync
+from cloudshell_user_sync.actions.ldap_sync import run_ldap_sync
 
 
 def ldap_sync_job(config_path, logger):

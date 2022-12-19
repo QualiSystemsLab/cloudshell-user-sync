@@ -1,5 +1,7 @@
 cloudshell-automation-api
 ldap3
+click
+schedule
 dacite
 pywin32
-schedule
+keyring

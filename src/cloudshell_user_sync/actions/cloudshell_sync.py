@@ -1,6 +1,3 @@
-"""
-"Inbound" groups is the user data coming from external data source like LDAP / AD
-"""
 import logging
 from typing import List, Dict
 
@@ -8,11 +5,14 @@ from cloudshell.api.cloudshell_api import CloudShellAPISession, GroupInfo
 from cloudshell_user_sync.models import cs_import
 
 
-class SyncInboundGroupsAction:
-    def __init__(self, api: CloudShellAPISession, inbound_groups_data: List[cs_import.InboundGroupData], logger: logging.Logger):
+class SyncGroupsAction:
+    def __init__(self,
+                 api: CloudShellAPISession,
+                 import_data_list: List[cs_import.ImportGroupData],
+                 logger: logging.Logger):
         self._api = api
         self._logger = logger
-        self._inbound_groups_data = inbound_groups_data
+        self.import_data_list = import_data_list
         self._cs_db_groups = self._get_cs_groups_dict()
         self._all_cs_users_set = self._get_all_cs_users_set()
         self._validate_inbound_groups()
@@ -27,7 +27,7 @@ class SyncInboundGroupsAction:
 
     def _validate_inbound_groups(self):
         missing_groups_set = set()
-        for curr_data in self._inbound_groups_data:
+        for curr_data in self.import_data_list:
             for group in curr_data.target_cloudshell_groups:
                 if group not in self._cs_db_groups:
                     missing_groups_set.add(group)
@@ -36,16 +36,16 @@ class SyncInboundGroupsAction:
             self._logger.error(err_msg)
             raise ValueError(err_msg)
 
-    def sync_inbound_groups(self):
+    def sync_groups(self):
         """
         The logic is to sync existing cloudshell users to their respective groups in LDAP / AD
         Users must log in first once manually to have their user imported. Non-imported users are not synced.
         """
         to_add_table: Dict[str, List[str]] = {}
         to_remove_table: Dict[str, List[str]] = {}
-        for inbound_group_data in self._inbound_groups_data:
-            for group in inbound_group_data.target_cloudshell_groups:
-                inbound_users_set = set(inbound_group_data.inbound_users)
+        for curr_group_data in self.import_data_list:
+            for group in curr_group_data.target_cloudshell_groups:
+                inbound_users_set = set(curr_group_data.users)
 
                 # here we check if the external users first exist in cloudshell
                 valid_inbound_users = inbound_users_set.intersection(self._all_cs_users_set)
@@ -63,6 +63,9 @@ class SyncInboundGroupsAction:
                     to_remove_set = to_remove_table.get(group, set())
                     to_remove_set.update(to_remove)
                     to_remove_table[group] = to_remove_set
+
+        if not to_add_table and not to_remove_table:
+            self._logger.debug("No sync action required")
 
         if to_add_table:
             for group in to_add_table:

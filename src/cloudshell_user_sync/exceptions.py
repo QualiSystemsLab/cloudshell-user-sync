@@ -13,3 +13,5 @@ class LdapHandlerException(CloudshellUserSyncBaseException):
 class CloudshellSyncGroupsException(CloudshellUserSyncBaseException):
     pass
 
+class ConfigLoadError(CloudshellUserSyncBaseException):
+    pass

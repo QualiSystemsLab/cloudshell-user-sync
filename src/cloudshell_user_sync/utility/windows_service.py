@@ -5,7 +5,7 @@ import win32serviceutil
 import servicemanager
 import win32event
 import win32service
-from rotating_log_handler import get_rotating_logger
+from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
 from schedule_handler import ScheduleHandler
 
 
@@ -15,7 +15,7 @@ class CloudshellSyncWinService(win32serviceutil.ServiceFramework):
     _svc_name_ = 'CloudshellUserSync'
     _svc_display_name_ = 'Cloudshell User Sync'
     _svc_description_ = 'Sync users with LDAP / Active Directory'
-    config_path = "."
+    config_path = ".."
     frequency_seconds = 120
 
     @classmethod

@@ -1,16 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 
 @dataclass
-class InboundGroupData:
-    external_group_uid: str
+class ImportGroupData:
+    ldap_group_cn: str
+    users: List[str]
     target_cloudshell_groups: List[str]
-    inbound_users: List[str]
-
-
-@dataclass
-class CloudshellUserData:
-    name: str
-    email: Optional[str]
-    password: Optional[str]

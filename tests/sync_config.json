@@ -1,0 +1,11 @@
+{
+  "cs_server": "localhost",
+  "ldap_server": "localhost",
+  "ldap_base_dn": "DC=natticorp,DC=example,DC=com",
+  "ldap_mappings": [
+    {
+      "ldap_cn": "nattigroup",
+      "cloudshell_groups": ["domain_admins", "QA users"]
+    }
+  ]
+}
