@@ -1,6 +1,9 @@
 import click
 import pkg_resources
+from cloudshell_user_sync.commands import view_config
+from cloudshell_user_sync.commands import set_credential
 from cloudshell_user_sync.commands import sync_groups
+from cloudshell_user_sync.commands import run_service
 
 
 @click.group()
@@ -25,13 +28,13 @@ def run():
 @cli.command()
 def service():
     """Install User Sync Service to run automatically"""
-    pass
+    run_service.run_service_flow()
 
 
 @cli.command()
 def config():
     """View Currently Set Config"""
-    pass
+    view_config.view_config_json()
 
 
 @cli.command()
@@ -39,9 +42,10 @@ def config():
 @click.argument("password")
 @click.option("--target",
               required=True,
-              type=click.Choice(["ldap", "cloudshell"], case_sensitive=False),
+              type=click.Choice(["ldap", "cloudshell", "cs"], case_sensitive=False),
               help="Specify target credentials type. cloudshell / ldap.")
 def credential(user, password, target):
     """Set Credentials For Cloudshell and LDAP"""
     click.echo(f"setting credential {user}, {password} to {target}")
-    pass
+    set_credential.set_credentials(user, password, target)
+    click.secho("Credentials Set", fg="green")

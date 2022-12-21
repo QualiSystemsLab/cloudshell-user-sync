@@ -1,19 +1,23 @@
+import logging
 from dataclasses import dataclass
 from typing import List
+
+UNSET = "UNSET"
+SET = "SET"
 
 
 @dataclass
 class CloudshellDetails:
-    user: str
-    password: str
+    user: str = UNSET
+    password: str = UNSET
     server: str = "localhost"
     domain: str = "Global"
 
 
 @dataclass
 class LdapDetails:
-    user_cn: str
-    password: str
+    user: str = UNSET
+    password: str = UNSET
     server: str = "localhost"
     base_dn: str = "DC=corp,DC=example,DC=com"
 
@@ -27,22 +31,12 @@ class LdapGroupsMapping:
 @dataclass
 class ServiceConfig:
     job_frequency_seconds: int = 120
+    log_level: str = logging.getLevelName(logging.INFO)
 
 
-# this represents the user json structure, to be combined with keyring credential data
-@dataclass
-class UserJsonConfig:
-    cs_server: str
-    ldap_server: str
-    ldap_mappings: List[LdapGroupsMapping]
-    service_config: ServiceConfig
-    ldap_base_dn: str = "DC=corp,DC=example,DC=com"
-
-
-# this is internal data model
 @dataclass
 class SyncConfig:
+    service_config: ServiceConfig
     cloudshell_details: CloudshellDetails
     ldap_details: LdapDetails
     ldap_mappings: List[LdapGroupsMapping]
-    service_config: ServiceConfig

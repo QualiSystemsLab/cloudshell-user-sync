@@ -1,29 +1,28 @@
 """
 https://github.com/dbader/schedule
 """
-import logging
-
 import schedule
 import time
-from cloudshell_user_sync.actions.ldap_sync import run_ldap_sync
+from cloudshell_user_sync.commands.sync_groups import sync_groups_flow
+from cloudshell_user_sync.utility import config_handler
+from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
 
 
-def ldap_sync_job(config_path, logger):
-    run_ldap_sync(json_config_path=config_path, logger=logger)
+def ldap_sync_job():
+    sync_groups_flow()
 
 
 class ScheduleHandler:
-    def __init__(self, config_path: str, logger: logging.Logger, frequency_seconds: int = 120):
-        self.frequency_seconds = frequency_seconds
-        self.logger = logger
-        self.config_path = config_path
+    def __init__(self):
+        self.logger = get_rotating_logger()
+        self.sync_config = config_handler.get_sync_config(self.logger)
+        self.logger.setLevel(self.sync_config.service_config.log_level)
+        self.frequency = self.sync_config.service_config.job_frequency_seconds
         self.active = False
 
     def run_scheduler(self):
         self.logger.info("Starting Cloudshell Sync Service")
-        schedule.every(self.frequency_seconds).seconds.do(ldap_sync_job,
-                                                          config_path=self.config_path,
-                                                          logger=self.logger)
+        schedule.every(self.frequency).seconds.do(ldap_sync_job)
         self.active = True
         while self.active:
             schedule.run_pending()
