@@ -1,11 +1,9 @@
 import socket
-import sys
-
 import win32serviceutil
 import servicemanager
 import win32event
 import win32service
-from schedule_handler import ScheduleHandler
+from cloudshell_user_sync.utility.schedule_handler import ScheduleHandler
 
 
 class CloudshellSyncWinService(win32serviceutil.ServiceFramework):
@@ -13,7 +11,7 @@ class CloudshellSyncWinService(win32serviceutil.ServiceFramework):
 
     _svc_name_ = 'CloudshellUserSync'
     _svc_display_name_ = 'Cloudshell User Sync'
-    _svc_description_ = 'Sync cloudshell users with LDAP / Active Directory'
+    _svc_description_ = 'Sync Cloudshell users with LDAP / Active Directory.'
 
     @classmethod
     def parse_command_line(cls):

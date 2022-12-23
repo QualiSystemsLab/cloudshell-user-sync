@@ -1,3 +1,6 @@
+"""
+Integration tests against live LDAP Server
+"""
 import json
 import env_settings
 import pytest

@@ -1,4 +1,4 @@
-from cloudshell_user_sync.actions import ldap_sync
+from cloudshell_user_sync.actions import cloudshell_sync
 from cloudshell_user_sync.utility import config_handler
 from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
 
@@ -12,7 +12,7 @@ def sync_groups_flow():
     ldap_handler = config_handler.get_ldap_handler_from_config(ldap_details=sync_config.ldap_details)
 
     # run ldap sync action
-    ldap_sync.run_ldap_sync(api=api,
-                            ldap_handler=ldap_handler,
-                            ldap_mappings=sync_config.ldap_mappings,
-                            logger=logger)
+    cloudshell_sync.ldap_pull_cloudshell_sync(api=api,
+                                              ldap_handler=ldap_handler,
+                                              ldap_mappings=sync_config.ldap_mappings,
+                                              logger=logger)

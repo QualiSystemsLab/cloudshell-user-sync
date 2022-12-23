@@ -3,9 +3,13 @@ from dataclasses import dataclass
 from ldap3 import Server, Connection, ALL, Entry
 
 
+SAM_ACCOUNT_NAME_ATTR = "sAMAccountName"
+
+
 @dataclass
 class LdapUserData:
     cn: str
+    sam_account_name: str
     email: str
 
 
@@ -75,11 +79,15 @@ class Ldap3Handler:
         for entry in user_entries:
             cn = entry["cn"]
             attrs = entry.entry_attributes
+            if SAM_ACCOUNT_NAME_ATTR in attrs:
+                sam_account_name = entry[SAM_ACCOUNT_NAME_ATTR]
+            else:
+                sam_account_name = ""
             if "mail" in attrs:
                 email = entry["mail"]
             else:
                 email = ""
-            user_data = LdapUserData(cn=cn, email=email)
+            user_data = LdapUserData(cn=cn, sam_account_name=sam_account_name, email=email)
             result.append(user_data)
         return result
 

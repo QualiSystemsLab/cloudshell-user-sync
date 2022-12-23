@@ -5,6 +5,7 @@ https://stackoverflow.com/a/53713336
 import json
 import logging
 from pathlib import Path
+from typing import List
 
 from cloudshell.api.cloudshell_api import CloudShellAPISession
 
@@ -65,7 +66,7 @@ def get_sync_config(logger: logging.Logger) -> config.SyncConfig:
     config_path = path_helper.get_system_config_path()
     sync_config = get_sync_config_from_json(config_path, logger)
     cs_creds = keyring_handler.get_cs_creds()
-    ldap_creds = keyring_handler.get_cs_creds()
+    ldap_creds = keyring_handler.get_ldap_creds()
     if cs_creds:
         sync_config.cloudshell_details.user = cs_creds.username
         sync_config.cloudshell_details.password = cs_creds.password
@@ -85,7 +86,7 @@ def set_cs_credentials(user: str, password: str, logger: logging.Logger):
     # update config file
     sync_config = get_sync_config_from_json(config_path, logger)
     sync_config.cloudshell_details.user = user
-    sync_config.cloudshell_details.password = config.SET
+    sync_config.cloudshell_details.password = config.SET_PASSWORD
     write_sync_config(config_path, sync_config)
 
 
@@ -99,7 +100,76 @@ def set_ldap_credentials(user: str, password: str, logger: logging.Logger):
     # update config file
     sync_config = get_sync_config_from_json(config_path, logger)
     sync_config.ldap_details.user = user
-    sync_config.ldap_details.password = config.SET
+    sync_config.ldap_details.password = config.SET_PASSWORD
+    write_sync_config(config_path, sync_config)
+
+
+def set_ldap_mapping(ldap_cn: str, cloudshell_groups: List[str], logger: logging.Logger):
+    logger.info(f"setting ldap mapping. LDAP CN: {ldap_cn}, CS Groups: {cloudshell_groups}")
+    config_path = path_helper.get_system_config_path()
+
+    # update config file
+    sync_config = get_sync_config_from_json(config_path, logger)
+    curr_mappings = sync_config.ldap_mappings
+    new_mapping = config.LdapGroupsMapping(ldap_cn, cloudshell_groups)
+    cn_list = [x.ldap_cn for x in curr_mappings]
+    if ldap_cn in cn_list:
+        existing_index = cn_list.index(ldap_cn)
+        curr_mappings[existing_index] = new_mapping
+    else:
+        curr_mappings.append(new_mapping)
+    write_sync_config(config_path, sync_config)
+
+
+def delete_ldap_mapping(ldap_cn: str, logger: logging.Logger):
+    logger.info(f"deleting ldap mapping. LDAP CN: {ldap_cn}")
+    config_path = path_helper.get_system_config_path()
+
+    # update config file
+    sync_config = get_sync_config_from_json(config_path, logger)
+    curr_mappings = sync_config.ldap_mappings
+    cn_list = [x.ldap_cn for x in curr_mappings]
+    if ldap_cn in cn_list:
+        existing_index = cn_list.index(ldap_cn)
+        curr_mappings.pop(existing_index)
+        write_sync_config(config_path, sync_config)
+
+
+def get_mappings_config(logger: logging.Logger) -> List[config.LdapGroupsMapping]:
+    config_path = path_helper.get_system_config_path()
+    sync_config = get_sync_config_from_json(config_path, logger)
+    return sync_config.ldap_mappings
+
+
+def set_config_kv_pair(target: str, key: str, value: str, logger: logging.Logger):
+    def validate_key(target_obj, config_key):
+        try:
+            getattr(target_obj, config_key)
+        except AttributeError:
+            raise exceptions.FatalError(f"{config_key} not present in {target} config")
+
+    config_path = path_helper.get_system_config_path()
+    sync_config = get_sync_config_from_json(config_path, logger)
+    if target.lower() == "ldap":
+        ldap_config = sync_config.ldap_details
+        validate_key(ldap_config, key)
+        setattr(ldap_config, key, value)
+    elif target.lower() in ["cs", "cloudshell"]:
+        cs_config = sync_config.cloudshell_details
+        validate_key(cs_config, key)
+        setattr(cs_config, key, value)
+    elif target.lower() == "service":
+        service_config = sync_config.service_config
+        validate_key(service_config, key)
+        if key == "job_frequency_seconds":
+            try:
+                value = int(value)
+            except ValueError:
+                raise exceptions.FatalError(f"'{key}' must be of int type. Got '{value}'")
+        setattr(service_config, key, value)
+    else:
+        raise exceptions.FatalError(f"invalid target config: {target}")
+    logger.info(f"setting {target} kv pair, {key} - {value}")
     write_sync_config(config_path, sync_config)
 
 

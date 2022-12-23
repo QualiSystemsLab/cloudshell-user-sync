@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List
 
 UNSET = "UNSET"
-SET = "SET"
+SET_PASSWORD = "************"
 
 
 @dataclass
