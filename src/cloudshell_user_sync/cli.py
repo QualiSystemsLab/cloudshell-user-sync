@@ -2,7 +2,7 @@ import click
 import pkg_resources
 
 from cloudshell_user_sync import exceptions
-from cloudshell_user_sync.commands import run_service, set_config, set_credential, set_mapping, sync_groups
+from cloudshell_user_sync.commands import run_scheduler, run_service, set_config, set_credential, set_mapping, sync_groups
 
 
 @click.group()
@@ -23,19 +23,16 @@ def run():
 
 
 @cli.command()
+def runscheduler():
+    """Run sync on infinite scheduler"""
+    run_scheduler.run_scheduled_jobs()
+
+
+@cli.command()
 @click.argument("action", required=True, type=click.Choice(["install", "update", "start"], case_sensitive=True))
-@click.option(
-    "--startup",
-    required=False,
-    type=click.Choice(["manual", "auto", "disabled", "delayed"], case_sensitive=True),
-    default="auto",
-    help="How the service starts. manual / auto. Default auto.",
-)
-def service(action, startup):
+def service(action):
     """Install Windows service to run job automatically"""
     click.echo(f"Running service '{action}' action")
-    if action == "install" and startup:
-        click.echo(f"installing with startup type '{startup}'")
     run_service.run_service_flow()
 
 

@@ -4,17 +4,131 @@
 
 # cloudshell-user-sync
 
-Sync Cloudshell groups with Active Directory Groups. 
-- LDAP3 used for pulling AD data
-- cloudshell-automation-api to update cloudshell groups
-- Python Schedule module used as cross-platform scheduler 
-- Windows Service installer module provided 
+A CLI tool to Sync LDAP / Active Directory Groups with Cloudshell groups.
+By default cloudshell imports LDAP users into default group, but no futher group mapping is done.
+This package will pull LDAP data, compare state of cloudshell group, and add/remove users.
+
+NOTE: Non-imported users added to a cloudshell group that don't exist in LDAP will be removed.
+The tool expects to fully manage the defined cloudshell groups. 
+Note that user does define exactly which cloudshell groups to manage.
+
 
 ### Installation
-TODO
+```commandline
+pip install cloudshell-user-sync
+```
 
+### Commands
+```commandline
+Commands:
+  config        View or Set Config - Pass no params to view config
+  credential    Set Credentials For Cloudshell and LDAP
+  mapping       Set LDAP group --> Cloudshell Groups Mapping
+  run           Pull LDAP Data and sync to Cloudshell
+  runscheduler  Run sync on infinite scheduler
+  service       Install Windows service to run job automatically
+  version       Display CLI version
+ 
+```
 ### Basic Usage
-TODO
+- configure credentials (stored in OS specific credential manager)
+- set config values for target servers
+- set LDAP -> Cloudshell Mappings
+- Do test sync run
+- Configure Service To run automatically
+
+#### Configure Credentials
+Set Cloudshell Credential
+```commandline
+usersync credential admin admin --target cloudshell
+```
+Set LDAP Credential
+```commandline
+usersync credential CN=Administrator,CN=Users,DC=samplecorp,DC=example,DC=com LDAP_DN_Password --target ldap
+```
+- User is the full distinguished name (DN) as seen in AD explorer 
+
+
+#### Set Config Values
+Credentials must be set through CLI to be stored in credential manager. 
+The other values can be set directly in file or optionally in CLI
+
+Default Config Path:
+- Windows: C:\ProgramData\QualiSystems\CloudshellUserSync\ldap_config.json
+- Linux: /opt/CloudshellUserSync/ldap_config.json
+
+view current config state
+```commandline
+usersync config
+```
+
+CLI Set config actions follows the pattern:
+```
+usersync config <target> <key> <value>
+```
+
+Set cloudshell server sample
+```commandline
+usersync config cloudshell server localhost
+```
+Set ldap server sample
+```commandline
+usersync config ldap server 10.0.0.7
+```
+
+#### Set LDAP mappings
+Can map one LDAP source group to multiple cloudshell groups (ie a list)
+
+View only mapping config:
+```commandline
+usersync mapping
+```
+
+Set mapping follows pattern:
+```commandline
+usersync mapping <LDAP_GROUP> --csgroups <CSGROUP1>,<CSGROUP2>,<CSGROUP3>
+```
+
+### Configure Windows Service
+Install and run job as managed windows service.
+
+Install service
+```commandline
+usersync service install
+```
+
+Start Service
+```commandline
+usersync service start
+```
+
+Notes:
+- After installation, must set service to run as same Logon user that ran install
+  - This is so it can access windows credential manager.
+- Set startup type to auto if desired
+- Check log to ensure no errors are occuring. 
+  - The service will not crash on errors due to lost connectivity to target servers. 
+
+
+### Linux Service
+No linux service generation command included. The following options are possible.
+- Schedule the "run" command to a cron job
+- Wrap the "runscheduler" command into a systemd service
+
+### Logs
+Both manual runs and scheduled runs log to the same rotating log file.
+
+- Windows:
+`C:\ProgramData\QualiSystems\CloudshellUserSync\Logs\UserSync.log`
+- Linux:
+`/opt/CloudshellUserSync/Logs/UserSync.log`
+
+### Dependencies
+- [LDAP3](https://github.com/cannatag/ldap3) for pulling source LDAP/AD data
+- [Schedule](https://github.com/dbader/schedule) as cross-platform cron scheduler
+- [Keyring](https://github.com/philipn/python-keyring-lib) to store credentials in OS
+- [Pywin32](https://github.com/mhammond/pywin32) - windows service installer
+- `cloudshell-automation-api` to update cloudshell groups
 
 ### License
 
