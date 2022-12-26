@@ -11,11 +11,11 @@ This package will pull LDAP data, compare state of cloudshell group, and add/rem
 
 - This package does NOT import users from LDAP. Only Syncs already imported Users.
   - Users must be first [manually imported](https://help.quali.com/Online%20Help/0.0/Portal/Content/Admn/AD-Imprt-Usrs-frm-AD-grp-file.htm) or [auto-imported on login](https://help.quali.com/Online%20Help/0.0/Portal/Content/Admn/AD-Intg-Auto-Imprt.htm?tocpath=CloudShell%20Administration%7CCloudShell%20Identity%20Management%7CAccess%20Control%20and%20Authentication%7CActive%20Directory%20Integration%7C_____1). 
-- Non-imported cloudshell users will NOT be evicted from groups if they aren't present in the mapped LDAP group.
-  - This tool only aims to manage ldap users from designated groups. 
-- This tool can be configured to manage only a subset of cloudshell groups, doesn't have to be globallly configured.
+- Non-imported cloudshell users will NOT be evicted from a synced group.
+  - This tool only aims to manage the imported ldap users - groups can be hybrid with "regular" users. 
+- This tool can be configured to manage only a subset of cloudshell groups - not a global system sync by default.
 - To improve performance of LDAP search, place the target ldap groups to sync close together in LDAP Tree
-  - This will allow to set a lower base_dn to search for users in and quicker ldap searches.
+  - This will allow to set a more focused root distinguished name and quicker ldap searches.
 
 
 ### Installation
