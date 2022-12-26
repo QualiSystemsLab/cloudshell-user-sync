@@ -102,7 +102,7 @@ def sync_cloudshell_groups(api: CloudShellAPISession, import_data_list: List[Imp
             api.AddUsersToGroup(users_list, group_name)
 
     if to_remove_map:
-        for group_name, users_set in to_remove_map:
+        for group_name, users_set in to_remove_map.items():
             users_list = list(users_set)
             users_json = json.dumps(users_list, indent=4)
             remove_msg = f"REMOVING users from Cloudshell Group '{group_name}'. Count: {len(users_list)}\n{users_json}"
