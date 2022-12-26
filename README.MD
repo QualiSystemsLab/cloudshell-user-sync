@@ -5,12 +5,15 @@
 # cloudshell-user-sync
 
 A CLI tool to Sync LDAP / Active Directory Groups with Cloudshell groups.
-By default cloudshell imports LDAP users into default group, but no futher group mapping is done.
-This package will pull LDAP data, compare state of cloudshell group, and add/remove users.
+This package will pull LDAP data, compare state of cloudshell group, and add/remove users to sync the groups.
 
-NOTE: Non-imported users added to a cloudshell group that don't exist in LDAP will be removed.
-The tool expects to fully manage the defined cloudshell groups. 
-Note that user does define exactly which cloudshell groups to manage.
+### Important Notes 
+
+- This package does NOT import users from LDAP. Only Syncs already imported Users
+  - Users must be first [manually imported](https://help.quali.com/Online%20Help/0.0/Portal/Content/Admn/AD-Imprt-Usrs-frm-AD-grp-file.htm) or [auto-imported on login](https://help.quali.com/Online%20Help/0.0/Portal/Content/Admn/AD-Intg-Auto-Imprt.htm?tocpath=CloudShell%20Administration%7CCloudShell%20Identity%20Management%7CAccess%20Control%20and%20Authentication%7CActive%20Directory%20Integration%7C_____1) 
+- Non-imported users added to a cloudshell group that don't exist in LDAP will be removed from that cloudshell group.
+  - This tool expects to fully manage the configured cloudshell groups. 
+  - This tool can be configured to manage only a subset of cloudshell groups
 
 
 ### Installation
@@ -31,11 +34,12 @@ Commands:
  
 ```
 ### Basic Usage
-- configure credentials (stored in OS specific credential manager)
-- set config values for target servers
-- set LDAP -> Cloudshell Mappings
-- Do test sync run
-- Configure Service To run automatically
+1. configure credentials (stored in OS specific credential manager)
+2. set config values for target cloudshell server
+3. Set config values for target LDAP server
+4. set LDAP -> Cloudshell Group Mappings
+5. Do manual sync run to test 
+6. Configure service to run job automatically
 
 #### Configure Credentials
 Set Cloudshell Credential
@@ -125,7 +129,7 @@ Both manual runs and scheduled runs log to the same rotating log file.
 
 ### Dependencies
 - [LDAP3](https://github.com/cannatag/ldap3) for pulling source LDAP/AD data
-- [Schedule](https://github.com/dbader/schedule) as cross-platform cron scheduler
+- [Schedule](https://github.com/dbader/schedule) as cross-platform cron-like scheduler
 - [Keyring](https://github.com/philipn/python-keyring-lib) to store credentials in OS
 - [Pywin32](https://github.com/mhammond/pywin32) - windows service installer
 - `cloudshell-automation-api` to update cloudshell groups
