@@ -2,7 +2,7 @@
   "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Stats</summary>\n\nCommits: #{{COMMITS}}\nChanged Files: #{{CHANGED_FILES}}\n#{{RELEASE_DIFF}}</details>",
   "categories": [
     {
-      "title": "### Breaking Changes \uD83D\uDCA5",
+      "title": "### Breaking Changes",
       "labels": [
         "breaking-change"
       ]
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "title": "### Fixes \uD83D\uDC1B",
+      "title": "### Fixes",
       "labels": [
         "bug"
       ]
@@ -26,13 +26,13 @@
       ]
     },
     {
-      "title": "### Documentation \uD83D\uDCDD",
+      "title": "### Documentation",
       "labels": [
         "documentation"
       ]
     },
     {
-      "title": "### Other \uD83D\uDCAC",
+      "title": "### Other",
       "labels": [
         "*"
       ]
