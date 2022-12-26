@@ -3,5 +3,7 @@ ldap3
 click
 schedule
 dacite
-pywin32
 keyring
+
+# windows only
+pywin32
