@@ -20,7 +20,17 @@ def generate_mock_cs_group(group_name, users: List[str]):
 
 @pytest.fixture(scope="module")
 def import_data() -> List[ImportGroupData]:
-    data_list = [ImportGroupData(ldap_group_cn="AD Users", target_cloudshell_groups=["SE"], users=["user1", "user3"])]
+    data_list = [
+        ImportGroupData(ldap_group_cn="AD Users 1",
+                        target_cloudshell_groups=["QA"],
+                        users=["user1", "user2"]),
+        ImportGroupData(ldap_group_cn="AD Users 2",
+                        target_cloudshell_groups=["SE"],
+                        users=["user3", "user4", "user6"]),
+        ImportGroupData(ldap_group_cn="AD Users 3",
+                        target_cloudshell_groups=["DEV"],
+                        users=["user5"]),
+    ]
     return data_list
 
 
@@ -29,7 +39,7 @@ def cs_db_groups() -> cloudshell_sync.CloudshellGroupInfoMap:
     """cloudshell group name mapped to GroupInfo"""
     return {
         "QA": generate_mock_cs_group("QA", ["user1", "user2"]),
-        "SE": generate_mock_cs_group("SE", ["user3", "user4"]),
+        "SE": generate_mock_cs_group("SE", ["user3", "user4", "user22"]),
         "DEV": generate_mock_cs_group("DEV", ["user5", "user6"]),
     }
 
@@ -37,12 +47,14 @@ def cs_db_groups() -> cloudshell_sync.CloudshellGroupInfoMap:
 @pytest.fixture(scope="module")
 def cs_users_set() -> cloudshell_sync.CloudshellGroupInfoMap:
     """cloudshell group name mapped to GroupInfo"""
-    return {"user1", "user2", "user3", "user4", "user5", "user6"}
+    return {"user1", "user2", "user3", "user4", "user5", "user6", "user7"}
 
 
 def test_calculate_groups(import_data, cs_db_groups, cs_users_set):
     to_add_table, to_remove_table = cloudshell_sync.calculate_groups_to_add_and_delete(
         import_data_list=import_data, cs_db_groups=cs_db_groups, all_cs_users_set=cs_users_set
     )
-    assert "user1" in to_add_table["SE"]
-    assert "user4" in to_remove_table["SE"]
+    assert "user6" in to_add_table["SE"]
+    assert "user6" in to_remove_table["DEV"]
+    assert "SE" not in to_remove_table
+    pass

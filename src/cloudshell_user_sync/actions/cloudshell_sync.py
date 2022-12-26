@@ -44,6 +44,13 @@ def validate_cloudshell_groups(
         raise ValueError(err_msg)
 
 
+def get_all_ldap_users_set(import_data_list: List[ImportGroupData]) -> Set[str]:
+    result = set()
+    for curr_data in import_data_list:
+        result.update(set(curr_data.users))
+    return result
+
+
 def calculate_groups_to_add_and_delete(
     import_data_list: List[ImportGroupData], cs_db_groups: CloudshellGroupInfoMap, all_cs_users_set: Set[str]
 ) -> Tuple[CsGroupsToUsersMap, CsGroupsToUsersMap]:
@@ -51,6 +58,7 @@ def calculate_groups_to_add_and_delete(
     Get back a tuple of what to add / remove
     :return:
     """
+    all_ldap_users_set = get_all_ldap_users_set(import_data_list)
     to_add_table: CsGroupsToUsersMap = {}
     to_remove_table: CsGroupsToUsersMap = {}
     for curr_data in import_data_list:
@@ -61,6 +69,9 @@ def calculate_groups_to_add_and_delete(
             valid_inbound_users = inbound_users_set.intersection(all_cs_users_set)
             cs_db_group_users = cs_db_groups[group].Users
             cs_db_group_users_set = {x.Name for x in cs_db_group_users}
+
+            # check that cloudshell group users are valid ldap user to avoid evicting non-imported users
+            cs_db_group_users_set = cs_db_group_users_set.intersection(all_ldap_users_set)
 
             # start set comparisons, and append to group hash tables
             to_add = valid_inbound_users - cs_db_group_users_set
