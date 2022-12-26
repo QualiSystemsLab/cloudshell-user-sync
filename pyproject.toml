@@ -29,6 +29,8 @@ disable = '''
         no-name-in-module,
         raise-missing-from,
         arguments-differ,
+        unnecessary-pass,
+        c-extension-no-member
 '''
 
 [tool.pylint.DESIGN]

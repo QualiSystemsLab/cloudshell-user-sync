@@ -14,15 +14,11 @@ def _get_keyring_creds(service_name: str) -> Credential:
 
 
 def set_cloudshell_keyring(cs_user: str, cs_password: str):
-    _set_keyring_pass(service_name=CS_CREDENTIAL_SERVICE,
-                      user_name=cs_user,
-                      password=cs_password)
+    _set_keyring_pass(service_name=CS_CREDENTIAL_SERVICE, user_name=cs_user, password=cs_password)
 
 
 def set_ldap_keyring(ldap_user: str, ldap_password: str):
-    _set_keyring_pass(service_name=LDAP_CREDENTIAL_SERVICE,
-                      user_name=ldap_user,
-                      password=ldap_password)
+    _set_keyring_pass(service_name=LDAP_CREDENTIAL_SERVICE, user_name=ldap_user, password=ldap_password)
 
 
 def get_cs_creds():

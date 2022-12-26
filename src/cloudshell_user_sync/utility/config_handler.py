@@ -4,30 +4,31 @@ https://stackoverflow.com/a/53713336
 """
 import json
 import logging
+import os
+from dataclasses import asdict
 from pathlib import Path
 from typing import List
 
+import dacite
 from cloudshell.api.cloudshell_api import CloudShellAPISession
 
 from cloudshell_user_sync import exceptions
 from cloudshell_user_sync.models import config
-from cloudshell_user_sync.utility import keyring_handler
+from cloudshell_user_sync.utility import keyring_handler, path_helper
 from cloudshell_user_sync.utility.ldap3_handler import Ldap3Handler
-from cloudshell_user_sync.utility import path_helper
-import dacite
-from dataclasses import asdict
-import os
 
 
 def get_empty_config() -> config.SyncConfig:
-    return config.SyncConfig(cloudshell_details=config.CloudshellDetails(),
-                             ldap_details=config.LdapDetails(),
-                             ldap_mappings=[],
-                             service_config=config.ServiceConfig())
+    return config.SyncConfig(
+        cloudshell_details=config.CloudshellDetails(),
+        ldap_details=config.LdapDetails(),
+        ldap_mappings=[],
+        service_config=config.ServiceConfig(),
+    )
 
 
 def write_sync_config(config_path: str, sync_config: config.SyncConfig):
-    """ generate new config"""
+    """generate new config"""
     output_file = Path(config_path)
     output_file.parent.mkdir(exist_ok=True, parents=True)
     config_dict = asdict(sync_config)
@@ -71,7 +72,7 @@ def get_sync_config(logger: logging.Logger) -> config.SyncConfig:
         sync_config.cloudshell_details.user = cs_creds.username
         sync_config.cloudshell_details.password = cs_creds.password
     if ldap_creds:
-        sync_config.ldap_details.user = ldap_creds.username
+        sync_config.ldap_details.user_dn = ldap_creds.username
         sync_config.ldap_details.password = ldap_creds.password
     return sync_config
 
@@ -99,7 +100,7 @@ def set_ldap_credentials(user: str, password: str, logger: logging.Logger):
 
     # update config file
     sync_config = get_sync_config_from_json(config_path, logger)
-    sync_config.ldap_details.user = user
+    sync_config.ldap_details.user_dn = user
     sync_config.ldap_details.password = config.SET_PASSWORD
     write_sync_config(config_path, sync_config)
 
@@ -184,7 +185,6 @@ def get_api_from_cs_config(cs_config: config.CloudshellDetails, logger: logging.
 
 
 def get_ldap_handler_from_config(ldap_details: config.LdapDetails) -> Ldap3Handler:
-    return Ldap3Handler(server=ldap_details.server,
-                        user_cn=ldap_details.user,
-                        password=ldap_details.password,
-                        base_dn=ldap_details.base_dn)
+    return Ldap3Handler(
+        server=ldap_details.server, user_dn=ldap_details.user_dn, password=ldap_details.password, base_dn=ldap_details.base_dn
+    )

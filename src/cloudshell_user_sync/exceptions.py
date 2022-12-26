@@ -6,11 +6,11 @@ class CloudshellUserSyncBaseException(Exception):
 
 
 class FatalError(click.ClickException):
-    def __init__(self, message):
-        super(FatalError, self).__init__(message)
+    def __init__(self, message):  # pylint: disable=useless-parent-delegation
+        super().__init__(message)
 
     def show(self, file=None):
-        click.secho("Error: {}".format(self.format_message()), err=True, fg="red")
+        click.secho(f"Error: {self.format_message()}", err=True, fg="red")
 
 
 class CloudshellApiException(CloudshellUserSyncBaseException):

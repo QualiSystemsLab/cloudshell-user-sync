@@ -6,12 +6,13 @@ CS_SERVER=localhost
 CS_DOMAIN=Global
 
 LDAP_SERVER=ldap://localhost
-LDAP_USER=Administrator
+LDAP_USER_DN=Administrator
 LDAP_PASSWORD=Password1
 LDAP_BASE_DN=DC=natticorp,DC=example,DC=com
 """
 
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,10 +24,9 @@ CS_SERVER = os.environ.get("CS_SERVER")
 CS_DOMAIN = os.environ.get("CS_DOMAIN")
 
 LDAP_SERVER = os.environ.get("LDAP_SERVER")
-LDAP_USER = os.environ.get("LDAP_USER")
+LDAP_USER_DN = os.environ.get("LDAP_USER_DN")
 LDAP_PASSWORD = os.environ.get("LDAP_PASSWORD")
 LDAP_BASE_DN = os.environ.get("LDAP_BASE_DN")
 
 LDAP_TARGET_GROUP_CN = os.environ.get("LDAP_TARGET_GROUP_CN")
 CS_TARGET_GROUPS = os.environ.get("CS_TARGET_GROUPS")
-

@@ -1,7 +1,7 @@
 import logging
 import sys
 
-LOG_FORMAT = '%(asctime)s - %(filename)s:%(lineno)d - [%(levelname)s] %(message)s'
+LOG_FORMAT = "%(asctime)s - %(filename)s:%(lineno)d - [%(levelname)s] %(message)s"
 
 
 def get_logger(logger_name: str):

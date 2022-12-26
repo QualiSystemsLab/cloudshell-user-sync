@@ -1,17 +1,22 @@
 import json
 import logging
 from dataclasses import asdict
-from typing import List, Dict, NewType, Tuple, Set
+from timeit import default_timer
+from typing import Dict, List, NewType, Set, Tuple
 
 from cloudshell.api.cloudshell_api import CloudShellAPISession, GroupInfo
 
 from cloudshell_user_sync import exceptions
+from cloudshell_user_sync.actions import ldap_pull
 from cloudshell_user_sync.models.config import LdapGroupsMapping
 from cloudshell_user_sync.models.cs_import import ImportGroupData
-from cloudshell_user_sync.actions import ldap_pull
+from cloudshell_user_sync.utility import safe_echo
 from cloudshell_user_sync.utility.ldap3_handler import Ldap3Handler
 
-LdapToCloudshellGroupsMap = NewType("LdapToCloudshellGroupsMap", Dict[str, List[str]])
+# map cloudshell group name to cloudshell users - used for building list of users to add / remove
+CsGroupsToUsersMap = NewType("CsGroupsToUsersMap", Dict[str, List[str]])
+
+# map cloudshell group name to GroupInfo object
 CloudshellGroupInfoMap = NewType("CloudshellGroupInfoMap", Dict[str, GroupInfo])
 
 
@@ -25,9 +30,9 @@ def get_all_cs_users_set(api: CloudShellAPISession) -> Set[str]:
     return {x.Name for x in all_users}
 
 
-def validate_cloudshell_groups(import_data_list: List[ImportGroupData],
-                               cs_db_groups: CloudshellGroupInfoMap,
-                               logger: logging.Logger):
+def validate_cloudshell_groups(
+    import_data_list: List[ImportGroupData], cs_db_groups: CloudshellGroupInfoMap, logger: logging.Logger
+):
     missing_groups_set = set()
     for curr_data in import_data_list:
         for group in curr_data.target_cloudshell_groups:
@@ -39,15 +44,15 @@ def validate_cloudshell_groups(import_data_list: List[ImportGroupData],
         raise ValueError(err_msg)
 
 
-def calculate_groups_to_add_and_delete(import_data_list: List[ImportGroupData],
-                                       cs_db_groups: CloudshellGroupInfoMap,
-                                       all_cs_users_set: Set[str]) -> Tuple[LdapToCloudshellGroupsMap, LdapToCloudshellGroupsMap]:
+def calculate_groups_to_add_and_delete(
+    import_data_list: List[ImportGroupData], cs_db_groups: CloudshellGroupInfoMap, all_cs_users_set: Set[str]
+) -> Tuple[CsGroupsToUsersMap, CsGroupsToUsersMap]:
     """
     Get back a tuple of what to add / remove
     :return:
     """
-    to_add_table: LdapToCloudshellGroupsMap = {}
-    to_remove_table: LdapToCloudshellGroupsMap = {}
+    to_add_table: CsGroupsToUsersMap = {}
+    to_remove_table: CsGroupsToUsersMap = {}
     for curr_data in import_data_list:
         for group in curr_data.target_cloudshell_groups:
             inbound_users_set = set(curr_data.users)
@@ -71,9 +76,7 @@ def calculate_groups_to_add_and_delete(import_data_list: List[ImportGroupData],
     return to_add_table, to_remove_table
 
 
-def sync_cloudshell_groups(api: CloudShellAPISession,
-                           import_data_list: List[ImportGroupData],
-                           logger: logging.Logger):
+def sync_cloudshell_groups(api: CloudShellAPISession, import_data_list: List[ImportGroupData], logger: logging.Logger):
     # get cloudshell data
     cs_db_groups = get_cs_groups_dict(api)
     all_cs_users = get_all_cs_users_set(api)
@@ -85,34 +88,48 @@ def sync_cloudshell_groups(api: CloudShellAPISession,
     to_add_map, to_remove_map = calculate_groups_to_add_and_delete(import_data_list, cs_db_groups, all_cs_users)
 
     if not to_add_map and not to_remove_map:
-        logger.debug("No sync action required")
+        no_action_msg = "No sync action required"
+        logger.debug(no_action_msg)
+        safe_echo.safe_echo(no_action_msg)
 
     if to_add_map:
-        for group in to_add_map:
-            users_list = list(to_add_map[group])
-            logger.info(f"Adding users to group: {group}\n{users_list}")
-            api.AddUsersToGroup(users_list, group)
+        for group_name, users_set in to_add_map.items():
+            users_list = list(users_set)
+            users_json = json.dumps(users_list, indent=4)
+            add_msg = f"ADDING users to Cloudshell Group '{group_name}'. Count: {len(users_list)}\n{users_json}"
+            logger.info(add_msg)
+            safe_echo.safe_echo(add_msg)
+            api.AddUsersToGroup(users_list, group_name)
 
     if to_remove_map:
-        for group in to_remove_map:
-            users_list = list(to_remove_map[group])
-            logger.info(f"Removing users from group: {group}\n{users_list}")
-            api.RemoveUsersFromGroup(users_list, group)
+        for group_name, users_set in to_remove_map:
+            users_list = list(users_set)
+            users_json = json.dumps(users_list, indent=4)
+            remove_msg = f"REMOVING users from Cloudshell Group '{group_name}'. Count: {len(users_list)}\n{users_json}"
+            logger.info(remove_msg)
+            safe_echo.safe_echo(remove_msg)
+            api.RemoveUsersFromGroup(users_list, group_name)
 
 
-def ldap_pull_cloudshell_sync(api: CloudShellAPISession,
-                              ldap_handler: Ldap3Handler,
-                              ldap_mappings: List[LdapGroupsMapping],
-                              logger: logging.Logger):
+def ldap_pull_cloudshell_sync(
+    api: CloudShellAPISession, ldap_handler: Ldap3Handler, ldap_mappings: List[LdapGroupsMapping], logger: logging.Logger
+):
     # Pull LDAP Data
     import_data_list = ldap_pull.ldap_pull_data(ldap_handler, ldap_mappings, logger)
     import_data_dicts = [asdict(x) for x in import_data_list]
     logger.debug(f"import data request:\n{json.dumps(import_data_dicts, indent=4)}")
 
     # Sync to Cloudshell
+    start_msg = "Starting User Sync..."
+    logger.debug(start_msg)
+    safe_echo.safe_echo(start_msg)
+    start = default_timer()
     try:
         sync_cloudshell_groups(api, import_data_list, logger)
     except Exception as e:
         err_msg = f"Issue syncing groups to cloudshell. {type(e).__name__}: {str(e)}"
         logger.error(err_msg)
         raise exceptions.CloudshellSyncGroupsException(err_msg)
+    completed_msg = f"Sync Flow Completed after {int(default_timer() - start)} seconds"
+    logger.debug(completed_msg)
+    safe_echo.safe_green_echo(completed_msg)

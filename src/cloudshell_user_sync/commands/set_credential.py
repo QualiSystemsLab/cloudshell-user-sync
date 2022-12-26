@@ -9,5 +9,5 @@ def set_credentials(user: str, password: str, target_service: str):
         config_handler.set_cs_credentials(user, password, logger)
     elif target_service.lower() == "ldap":
         config_handler.set_ldap_credentials(user, password, logger)
-
-    raise ValueError(f"target service type {target_service} not valid")
+    else:
+        raise ValueError(f"target service type '{target_service}' not valid")

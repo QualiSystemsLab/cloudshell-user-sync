@@ -1,5 +1,6 @@
 import json
 from dataclasses import asdict
+
 import click
 
 from cloudshell_user_sync.utility import config_handler

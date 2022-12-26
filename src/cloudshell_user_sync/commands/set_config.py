@@ -1,10 +1,11 @@
 import json
 from dataclasses import asdict
-from cloudshell_user_sync.utility import config_handler
-from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
-from cloudshell_user_sync.utility import path_helper
-from cloudshell_user_sync import exceptions
+
 import click
+
+from cloudshell_user_sync import exceptions
+from cloudshell_user_sync.utility import config_handler, path_helper
+from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
 
 
 def view_or_set_config(target: str, key: str, value: str):

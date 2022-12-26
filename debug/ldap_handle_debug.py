@@ -1,21 +1,18 @@
 import ldap3
 from ldap3 import Entry
 
-
 BASE_DN = "DC=natticorp,DC=example,DC=com"
 TARGET_GROUP = "nattigroup"
-TARGET_GROUP_DN = f'CN={TARGET_GROUP},{BASE_DN}'
+TARGET_GROUP_DN = f"CN={TARGET_GROUP},{BASE_DN}"
 SERVER_IP = "192.168.85.114"
 LOGIN_USER = "Administrator"
 LOGIN_PASSWORD = "Password1"
 
 # Connect to the LDAP server
-server = ldap3.Server(host=f'ldap://{SERVER_IP}')
-conn = ldap3.Connection(server=server,
-                        user=f"CN={LOGIN_USER},CN=Users,{BASE_DN}",
-                        password=LOGIN_PASSWORD)
+server = ldap3.Server(host=f"ldap://{SERVER_IP}")
+conn = ldap3.Connection(server=server, user=f"CN={LOGIN_USER},CN=Users,{BASE_DN}", password=LOGIN_PASSWORD)
 
-search_filter = f'(&(objectClass=user)(memberOf={TARGET_GROUP_DN}))'
+search_filter = f"(&(objectClass=user)(memberOf={TARGET_GROUP_DN}))"
 
 with conn:
     # conn.bind()
@@ -23,7 +20,7 @@ with conn:
         search_base=BASE_DN,
         search_filter=search_filter,
         # search_scope='SUBTREE',
-        attributes=["*"]
+        attributes=["*"],
     )
     user_entries = conn.entries
 
@@ -40,14 +37,13 @@ with conn:
     # conn.bind()
     is_found = conn.search(
         search_base=BASE_DN,
-        search_filter='(cn=nattigroup)',
+        search_filter="(cn=nattigroup)",
         # search_scope='SUBTREE',
-        attributes=["*"]
+        attributes=["*"],
     )
     entries = conn.entries
     if not entries:
         raise ValueError("group not found")
     members = entries[0].member.values
     pass
-conn.search('dc=example,dc=com', search_filter, attributes=['cn', 'mail'])
-
+conn.search("dc=example,dc=com", search_filter, attributes=["cn", "mail"])

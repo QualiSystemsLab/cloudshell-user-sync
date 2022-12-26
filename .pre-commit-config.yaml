@@ -20,6 +20,7 @@ repos:
     rev: 3.8.3
     hooks:
       - id: flake8
+        exclude: ^debug/
         additional_dependencies: []
         args: []
 
@@ -31,5 +32,6 @@ repos:
         name: pylint
         entry: pylint
         language: system
+        exclude: ^debug/
         types: [ python ]
         args: []

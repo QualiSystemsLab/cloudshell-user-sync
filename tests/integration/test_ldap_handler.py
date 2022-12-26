@@ -2,6 +2,7 @@
 Integration tests against live LDAP Server
 """
 import json
+
 import env_settings
 import pytest
 
@@ -13,7 +14,7 @@ def target_group_cn() -> str:
 
 def test_get_all_groups(ldap_handler):
     all_groups = ldap_handler.get_all_groups_entries()
-    assert (len(all_groups) > 10)
+    assert len(all_groups) > 10
     print(f"\ntotal groups found: {len(all_groups)}")
 
 

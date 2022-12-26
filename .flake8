@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 127
-exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,debug
 max-complexity = 10
 ignore =
         E203,

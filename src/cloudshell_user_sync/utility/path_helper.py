@@ -2,36 +2,38 @@
 define path for windows and linux config files and logs
 
 Windows:
-C:/ProgramData/CloudshellUserSync/Logs/UserSync.log
-C:/ProgramData/CloudshellUserSync/ldap_config.json
+C:/ProgramData/Qualisystems/CloudshellUserSync/Logs/UserSync.log
+C:/ProgramData/Qualisystems/CloudshellUserSync/ldap_config.json
 
 Linux:
-/var/log/CloudshellUserSync/Logs/UserSync.log
+/opt/CloudshellUserSync/Logs/UserSync.log
 /opt/CloudshellUserSync/ldap_config.json
 """
 import os
 import platform
 
 APP_FOLDER = "CloudshellUserSync"
+CONFIG_FILE = "ldap_config.json"
 LOG_FOLDER_NAME = "Logs"
 LOG_FILE_NAME = "UserSync.log"
 
-LINUX_BASE_LOG_DIR = "/var/log"
+# OS specific
+WINDOWS_PROGRAM_DATA_QUALI_FOLDER = "QualiSystems"
 LINUX_BASE_CONFIG_DIR = "/opt"
-
-CONFIG_FILE = "ldap_config.json"
 
 
 def get_windows_log_path():
-    return os.path.join(os.getenv("PROGRAMDATA"), APP_FOLDER, LOG_FOLDER_NAME, LOG_FILE_NAME)
+    return os.path.join(
+        os.getenv("PROGRAMDATA"), WINDOWS_PROGRAM_DATA_QUALI_FOLDER, APP_FOLDER, LOG_FOLDER_NAME, LOG_FILE_NAME
+    )
 
 
 def get_windows_config_path():
-    return os.path.join(os.getenv("PROGRAMDATA"), APP_FOLDER, CONFIG_FILE)
+    return os.path.join(os.getenv("PROGRAMDATA"), WINDOWS_PROGRAM_DATA_QUALI_FOLDER, APP_FOLDER, CONFIG_FILE)
 
 
 def get_linux_log_path():
-    return os.path.join(LINUX_BASE_LOG_DIR, APP_FOLDER, LOG_FOLDER_NAME, LOG_FILE_NAME)
+    return os.path.join(LINUX_BASE_CONFIG_DIR, APP_FOLDER, LOG_FOLDER_NAME, LOG_FILE_NAME)
 
 
 def get_linux_config_path():

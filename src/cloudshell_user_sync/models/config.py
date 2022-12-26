@@ -16,7 +16,7 @@ class CloudshellDetails:
 
 @dataclass
 class LdapDetails:
-    user: str = UNSET
+    user_dn: str = UNSET
     password: str = UNSET
     server: str = "localhost"
     base_dn: str = "DC=corp,DC=example,DC=com"
