@@ -19,12 +19,13 @@ def view_or_set_config(target: str, key: str, value: str):
     passed_params = [target, key, value]
     if all(passed_params):
         click.echo(f"Setting '{target}' config. Key: {key}, Value: {value}")
-        config_handler.set_config_kv_pair(target, key, value, logger)
+        config_handler.set_config_kv_pair(config_path, target, key, value, logger)
         click.secho("Config Value Set", fg="green")
     elif any(passed_params):
         exc_msg = f"Invalid Set Config Params passed. Target: {target}, Key: {key}, Value: {value}"
         raise exceptions.FatalError(exc_msg)
     else:
         click.echo(f"Config Path: {config_path}")
-        sync_config = config_handler.get_sync_config_from_json(config_path, logger)
+        sync_config = config_handler.get_sync_config(config_path, logger)
+        sync_config = config_handler.prep_config_for_display(sync_config)
         click.echo(json.dumps(asdict(sync_config), indent=4))

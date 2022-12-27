@@ -4,33 +4,34 @@ from typing import List
 
 UNSET = "UNSET"
 SET_PASSWORD = "************"
+DEFAULT_JOB_FREQUENCY_SECONDS = 600  # every ten minutes
 
 
 @dataclass
 class CloudshellDetails:
-    user: str = UNSET
-    password: str = UNSET
+    user: str = ""
+    password: str = ""
     server: str = "localhost"
     domain: str = "Global"
 
 
 @dataclass
 class LdapDetails:
-    user_dn: str = UNSET
-    password: str = UNSET
-    server: str = "localhost"
-    base_dn: str = "DC=corp,DC=example,DC=com"
+    user_dn: str = ""
+    password: str = ""
+    server: str = ""
+    base_dn: str = ""
 
 
 @dataclass
 class LdapGroupsMapping:
-    ldap_cn: str
+    ldap_dn: str
     cloudshell_groups: List[str]
 
 
 @dataclass
 class ServiceConfig:
-    job_frequency_seconds: int = 120
+    job_frequency_seconds: int = DEFAULT_JOB_FREQUENCY_SECONDS
     log_level: str = logging.getLevelName(logging.INFO)
 
 

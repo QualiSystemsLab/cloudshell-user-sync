@@ -16,14 +16,14 @@ def ldap_pull_data(
     import_data_list = []
     for curr_mapping in ldap_mappings:
         try:
-            ldap_users = ldap_handler.get_user_data_for_group_cn(curr_mapping.ldap_cn)
+            ldap_users = ldap_handler.get_user_data_for_group_dn(curr_mapping.ldap_dn)
         except Exception as e:
-            err_msg = f"Issue getting LDAP data for Group CN '{curr_mapping.ldap_cn}'. {type(e).__name__}: {str(e)}"
+            err_msg = f"Issue getting LDAP data for Group DN '{curr_mapping.ldap_dn}'. {type(e).__name__}: {str(e)}"
             logger.error(err_msg)
             raise exceptions.LdapHandlerException(err_msg)
         user_names = [x.sam_account_name for x in ldap_users]
         import_data = ImportGroupData(
-            ldap_group_cn=curr_mapping.ldap_cn, users=user_names, target_cloudshell_groups=curr_mapping.cloudshell_groups
+            ldap_group_dn=curr_mapping.ldap_dn, users=user_names, target_cloudshell_groups=curr_mapping.cloudshell_groups
         )
         import_data_list.append(import_data)
     return import_data_list

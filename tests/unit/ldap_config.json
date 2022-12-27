@@ -1,0 +1,35 @@
+{
+    "service_config": {
+        "job_frequency_seconds": 30,
+        "log_level": "DEBUG"
+    },
+    "cloudshell_details": {
+        "server": "1.1.1.1",
+        "domain": "Global"
+    },
+    "ldap_details": {
+        "server": "192.168.85.114",
+        "base_dn": "DC=natticorp,DC=example,DC=com"
+    },
+    "ldap_mappings": [
+        {
+            "ldap_dn": "mygroup2",
+            "cloudshell_groups": [
+                "SE"
+            ]
+        },
+        {
+            "ldap_dn": "nattigroup",
+            "cloudshell_groups": [
+                "QA"
+            ]
+        },
+        {
+            "ldap_dn": "test_dn",
+            "cloudshell_groups": [
+                "csgroup1",
+                "csgroup2"
+            ]
+        }
+    ]
+}

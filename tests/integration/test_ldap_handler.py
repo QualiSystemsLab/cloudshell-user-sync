@@ -8,8 +8,8 @@ import pytest
 
 
 @pytest.fixture(scope="module")
-def target_group_cn() -> str:
-    return env_settings.LDAP_TARGET_GROUP_CN
+def target_group_dn() -> str:
+    return env_settings.LDAP_TARGET_GROUP_DN
 
 
 def test_get_all_groups(ldap_handler):
@@ -28,6 +28,6 @@ def test_get_custom_group_dn(ldap_handler):
     print(f"\n{len(custom_groups_dn)} custom groups found: {json.dumps(custom_groups_dn, indent=4)}")
 
 
-def test_get_user_data(ldap_handler, target_group_cn):
-    users = ldap_handler.get_user_data_for_group_cn(target_group_cn)
+def test_get_user_data(ldap_handler, target_group_dn):
+    users = ldap_handler.get_user_data_for_group_dn(target_group_dn)
     print(f"\nusers found: {len(users)}")
