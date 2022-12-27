@@ -1,8 +1,7 @@
 from _pytest.fixtures import fixture
 
-from cloudshell_user_sync.utility import config_handler
-
 from cloudshell_user_sync.models import config
+from cloudshell_user_sync.utility import config_handler
 
 
 @fixture

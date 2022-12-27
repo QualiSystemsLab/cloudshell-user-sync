@@ -11,7 +11,6 @@ def sync_groups_flow():
     logger.setLevel(sync_config.service_config.log_level)
     api = config_handler.get_api_from_cs_config(cs_config=sync_config.cloudshell_details, logger=logger)
     ldap_handler = config_handler.get_ldap_handler_from_config(ldap_details=sync_config.ldap_details)
-    cloudshell_sync.ldap_pull_cloudshell_sync(api=api,
-                                              ldap_handler=ldap_handler,
-                                              ldap_mappings=sync_config.ldap_mappings,
-                                              logger=logger)
+    cloudshell_sync.ldap_pull_cloudshell_sync(
+        api=api, ldap_handler=ldap_handler, ldap_mappings=sync_config.ldap_mappings, logger=logger
+    )

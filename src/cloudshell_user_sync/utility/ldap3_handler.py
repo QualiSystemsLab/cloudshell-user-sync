@@ -83,5 +83,4 @@ if __name__ == "__main__":
 
     handler = Ldap3Handler(LDAP_SERVER, LDAP_USER_DN, LDAP_PASSWORD, LDAP_BASE_DN)
     group_users = handler.get_user_data_for_group_dn(TARGET_GROUP_DN)
-    print((f"Group: {TARGET_GROUP_DN}\n"
-           f"Users Found: {len(group_users)}"))
+    print((f"Group: {TARGET_GROUP_DN}\n" f"Users Found: {len(group_users)}"))

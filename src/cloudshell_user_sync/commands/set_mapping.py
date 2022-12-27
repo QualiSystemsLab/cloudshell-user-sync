@@ -14,10 +14,7 @@ def set_ldap_mapping(ldap_dn: str, cloudshell_groups: str):
     logger = get_rotating_logger()
     config_path = path_helper.get_system_config_path()
     cs_groups = [x.strip() for x in cloudshell_groups.split(",")]
-    config_handler.set_ldap_mapping(config_path=config_path,
-                                    ldap_dn=ldap_dn,
-                                    cloudshell_groups=cs_groups,
-                                    logger=logger)
+    config_handler.set_ldap_mapping(config_path=config_path, ldap_dn=ldap_dn, cloudshell_groups=cs_groups, logger=logger)
 
 
 def delete_ldap_mapping(ldap_dn: str):
