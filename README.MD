@@ -16,8 +16,9 @@ This package will pull LDAP data, compare state of cloudshell group, and add/rem
   - This tool only aims to manage the imported ldap users.
   - Groups can be hybrid with "regular" users. 
 - This tool can be configured to manage only a subset of cloudshell groups.
-- To improve performance of LDAP search, place target ldap groups close together in LDAP Tree
-  - This will allow to set a more focused base root DN [(distinguished name)](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names) to allow quicker ldap searches.
+- If possible, to improve performance of LDAP search, place target ldap users together under common root  in LDAP Tree.
+  - This will allow to set a lower base root DN [(distinguished name)](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names) to allow quicker ldap searches.
+  - Note that LDAP groups and users are not necessarily in same location of ldap tree
 
 
 ### Installation
@@ -75,14 +76,18 @@ CLI Set config actions follows the pattern:
 usersync config <target> <key> <value>
 ```
 
-Set cloudshell server sample
+Set cloudshell server details
 ```commandline
 usersync config cloudshell server localhost
 ```
-Set ldap server sample
+
+Set ldap details
 ```commandline
 usersync config ldap server 10.0.0.7
+usersync config ldap base_dn DC=samplecorp,DC=example,DC=com
 ```
+- base_dn is where the ldap search will start from
+- Filter scheme used is: `(&(objectClass=user)(memberOf=<GROUP_DN>))`
 
 #### Set LDAP mappings
 Can map one LDAP source group to multiple cloudshell groups (ie a list)
@@ -94,7 +99,12 @@ usersync mapping
 
 Set mapping follows pattern:
 ```commandline
-usersync mapping <LDAP_GROUP> --csgroups <CSGROUP1>,<CSGROUP2>,<CSGROUP3>
+usersync mapping <LDAP_GROUP_DN> --csgroups <CSGROUP1>,<CSGROUP2>,<CSGROUP3>
+```
+
+sample:
+```commandline
+usersync mapping CN=nattigroup,DC=natticorp,DC=example,DC=com --csgroups <CSGROUP1>,<CSGROUP2>,<CSGROUP3>
 ```
 
 ### Configure Windows Service
@@ -112,10 +122,10 @@ usersync service start
 
 Notes:
 - After installation, must set service to run as same Logon user that ran install
-  - This is so it can access windows credential manager.
-- Set startup type to auto if desired
+  - This is so service can access windows credential manager with same user that set the credentials
+- Set startup type to auto
 - Check log to ensure no errors are occuring. 
-  - The service will not crash on errors due to lost connectivity to target servers. 
+- Set log level to debug to see more details on users found per LDAP request 
 
 
 ### Linux Service
