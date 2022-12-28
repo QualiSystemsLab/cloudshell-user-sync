@@ -121,6 +121,7 @@ usersync service start
 ```
 
 Notes:
+- Must run with Adminsistrator CMD to install / update service
 - After installation, must set service to run as same Logon user that ran install
   - This is so service can access windows credential manager with same user that set the credentials
 - Set startup type to auto
