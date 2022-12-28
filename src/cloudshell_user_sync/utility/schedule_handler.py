@@ -7,13 +7,14 @@ import traceback
 import schedule
 
 from cloudshell_user_sync.commands.sync_groups import sync_groups_flow
-from cloudshell_user_sync.utility import config_handler
+from cloudshell_user_sync.utility import config_handler, path_helper
 from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
 
 
 def ldap_sync_job():
     logger = get_rotating_logger()
-    sync_config = config_handler.get_sync_config(logger)
+    config_path = path_helper.get_system_config_path()
+    sync_config = config_handler.get_sync_config(config_path, logger)
     logger.setLevel(sync_config.service_config.log_level)
     try:
         sync_groups_flow()
@@ -25,7 +26,8 @@ def ldap_sync_job():
 class ScheduleHandler:
     def __init__(self):
         self.logger = get_rotating_logger()
-        self.sync_config = config_handler.get_sync_config(self.logger)
+        config_path = path_helper.get_system_config_path()
+        self.sync_config = config_handler.get_sync_config(config_path, self.logger)
         self.logger.setLevel(self.sync_config.service_config.log_level)
         self.frequency = self.sync_config.service_config.job_frequency_seconds
         self.active = False

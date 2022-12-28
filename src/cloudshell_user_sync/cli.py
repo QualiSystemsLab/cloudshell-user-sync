@@ -74,7 +74,7 @@ def mapping(ldapgroup, csgroups, delete):
         raise exceptions.FatalError("Not Valid Combination of parameters")
     if ldapgroup and csgroups:
         click.echo(f"setting mapping for {ldapgroup} --> {csgroups}")
-        set_mapping.set_ldap_mapping(ldap_cn=ldapgroup, cloudshell_groups=csgroups)
+        set_mapping.set_ldap_mapping(ldap_dn=ldapgroup, cloudshell_groups=csgroups)
         click.secho("Mapping Set", fg="green")
     elif ldapgroup and delete:
         set_mapping.delete_ldap_mapping(ldapgroup)

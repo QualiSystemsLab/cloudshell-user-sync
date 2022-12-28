@@ -9,6 +9,7 @@ LDAP_SERVER=ldap://localhost
 LDAP_USER_DN=Administrator
 LDAP_PASSWORD=Password1
 LDAP_BASE_DN=DC=natticorp,DC=example,DC=com
+LDAP_TARGET_GROUP_DN=CN=nattigroup,DC=natticorp,DC=example,DC=com
 """
 
 import os
@@ -28,5 +29,5 @@ LDAP_USER_DN = os.environ.get("LDAP_USER_DN")
 LDAP_PASSWORD = os.environ.get("LDAP_PASSWORD")
 LDAP_BASE_DN = os.environ.get("LDAP_BASE_DN")
 
-LDAP_TARGET_GROUP_CN = os.environ.get("LDAP_TARGET_GROUP_CN")
+LDAP_TARGET_GROUP_DN = os.environ.get("LDAP_TARGET_GROUP_DN")
 CS_TARGET_GROUPS = os.environ.get("CS_TARGET_GROUPS")

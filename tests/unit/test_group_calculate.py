@@ -21,9 +21,9 @@ def generate_mock_cs_group(group_name, users: List[str]):
 @pytest.fixture(scope="module")
 def import_data() -> List[ImportGroupData]:
     data_list = [
-        ImportGroupData(ldap_group_cn="AD Users 1", target_cloudshell_groups=["QA"], users=["user1", "user2"]),
-        ImportGroupData(ldap_group_cn="AD Users 2", target_cloudshell_groups=["SE"], users=["user3", "user4", "user6"]),
-        ImportGroupData(ldap_group_cn="AD Users 3", target_cloudshell_groups=["DEV"], users=["user5"]),
+        ImportGroupData(ldap_group_dn="AD Users 1", target_cloudshell_groups=["QA"], users=["user1", "user2"]),
+        ImportGroupData(ldap_group_dn="AD Users 2", target_cloudshell_groups=["SE"], users=["user3", "user4", "user6"]),
+        ImportGroupData(ldap_group_dn="AD Users 3", target_cloudshell_groups=["DEV"], users=["user5"]),
     ]
     return data_list
 
