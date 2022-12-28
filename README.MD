@@ -7,6 +7,8 @@
 A CLI tool to Sync LDAP / Active Directory Groups with Cloudshell groups.
 This package will pull LDAP data, compare state of cloudshell group, and add/remove users to sync the groups.
 
+Additionally included, a cross platform cron-like [scheduler](https://github.com/dbader/schedule) command and windows service wrapper installer.
+
 ### Important Notes 
 
 - This package does NOT import/create users from LDAP - only syncs already imported users across groups.
