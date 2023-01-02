@@ -125,22 +125,41 @@ def sync_cloudshell_groups(api: CloudShellAPISession, import_data_list: List[Imp
 def ldap_pull_cloudshell_sync(
     api: CloudShellAPISession, ldap_handler: Ldap3Handler, ldap_mappings: List[LdapGroupsMapping], logger: logging.Logger
 ):
+
+    # start master timer
+    master_start = default_timer()
+    ldap_pull_msg = "Starting LDAP Query..."
+    logger.debug(ldap_pull_msg)
+    safe_echo.safe_echo(ldap_pull_msg)
+
     # Pull LDAP Data
     import_data_list = ldap_pull.ldap_pull_data(ldap_handler, ldap_mappings, logger)
+
+    # log LDAP query time
+    ldap_finish_msg = f"LDAP pull action done after {int(default_timer() - master_start)} seconds"
+    logger.debug(ldap_finish_msg)
+    safe_echo.safe_yellow_echo(ldap_finish_msg)
+
+    # log the pulled data
     import_data_dicts = [asdict(x) for x in import_data_list]
     logger.debug(f"import data request:\n{json.dumps(import_data_dicts, indent=4)}")
 
     # Sync to Cloudshell
-    start_msg = "Starting User Sync..."
-    logger.debug(start_msg)
-    safe_echo.safe_echo(start_msg)
-    start = default_timer()
+    start_sync_msg = "Syncing to Cloudshell..."
+    logger.debug(start_sync_msg)
+    safe_echo.safe_echo(start_sync_msg)
+    cs_sync_start = default_timer()
     try:
         sync_cloudshell_groups(api, import_data_list, logger)
     except Exception as e:
         err_msg = f"Issue syncing groups to cloudshell. {type(e).__name__}: {str(e)}"
         logger.error(err_msg)
         raise exceptions.CloudshellSyncGroupsException(err_msg)
-    completed_msg = f"Sync Flow Completed after {int(default_timer() - start)} seconds"
-    logger.debug(completed_msg)
-    safe_echo.safe_green_echo(completed_msg)
+    cs_completed_msg = f"Cloudshell sync Completed after {int(default_timer() - cs_sync_start)} seconds"
+    logger.debug(cs_completed_msg)
+    safe_echo.safe_yellow_echo(cs_completed_msg)
+
+    # log total job time
+    job_finish_msg = f"Sync job done after {int(default_timer() - master_start)} seconds"
+    logger.debug(job_finish_msg)
+    safe_echo.safe_green_echo(job_finish_msg)
