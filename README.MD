@@ -19,12 +19,23 @@ Additionally included, a cross platform cron-like [scheduler](https://github.com
   - Groups can be hybrid with "regular" users. 
 - This tool can be configured to manage only a subset of cloudshell groups.
 - If possible, to improve performance of LDAP search, place target ldap users together under common root  in LDAP Tree.
-  - This will allow to set a lower base root DN [(distinguished name)](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names) to allow quicker ldap searches.
-  - Note that LDAP groups and users are not necessarily in same location of ldap tree
+  - This will allow to set a lower base root [Distinguished Name](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names) to allow quicker ldap searches.
+  - Note that LDAP groups and users are not necessarily in same location of ldap tree. The Base DN must be where the users are not the groups.
 
 
 ### Installation
+Install with pip or download from Github releases
 ```commandline
+pip install cloudshell-user-sync
+```
+
+Recommended to install into dedicated [venv](https://docs.python.org/3/library/venv.html) if using as service
+```commandline
+mkdir user-sync-venv
+cd user-sync-venv
+venv .
+cd Scripts
+activate
 pip install cloudshell-user-sync
 ```
 
@@ -41,12 +52,13 @@ Commands:
  
 ```
 ### Basic Usage
-1. configure credentials (stored in OS specific credential manager)
-2. set config values for target cloudshell server
-3. Set config values for target LDAP server
-4. set LDAP -> Cloudshell Group Mappings
-5. Do manual sync run to test 
-6. Configure service to run job automatically
+1. Configure venv and install package 
+2. configure credentials (stored in OS specific credential manager)
+3. set config values for target cloudshell server
+4. Set config values for target LDAP server
+5. set LDAP -> Cloudshell Group Mappings
+6. Do manual sync run to test 
+7. Configure service to run job automatically
 
 #### Configure Credentials
 Set Cloudshell Credential
@@ -57,7 +69,8 @@ Set LDAP Credential
 ```commandline
 usersync credential CN=Administrator,CN=Users,DC=samplecorp,DC=example,DC=com LDAP_DN_Password --target ldap
 ```
-- User is the full distinguished name (DN) as seen in AD explorer 
+- LDAP User is the full [Distinguished Name](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names) 
+- To find DN can use [AD Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/adexplorer) or [LDAP Explorer](https://ldaptool.sourceforge.net/) 
 
 
 #### Set Config Values
