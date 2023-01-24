@@ -99,10 +99,35 @@ Default Config Path:
 - Windows: C:\ProgramData\QualiSystems\CloudshellUserSync\ldap_config.json
 - Linux: /opt/CloudshellUserSync/ldap_config.json
 
-view current config state
+View current config state by running `usersync config`:
 
-```commandline
-usersync config
+```json
+{
+    "service_config": {
+        "job_frequency_seconds": 30,
+        "log_level": "DEBUG"
+    },
+    "cloudshell_details": {
+        "user": "admin",
+        "password": "************",
+        "server": "192.168.85.114",
+        "domain": "Global"
+    },
+    "ldap_details": {
+        "user_dn": "CN=Administrator,CN=Users,DC=testcorp,DC=example,DC=com",
+        "password": "************",
+        "server": "192.168.85.115",
+        "base_dn": "DC=testcorp,DC=example,DC=com"
+    },
+    "ldap_mappings": [
+        {
+            "ldap_dn": "CN=testgroup,DC=testcorp,DC=example,DC=com",
+            "cloudshell_groups": [
+                "QA"
+            ]
+        }
+    ]
+}
 ```
 
 CLI Set config actions follows the pattern:
@@ -111,13 +136,13 @@ CLI Set config actions follows the pattern:
 usersync config <target> <key> <value>
 ```
 
-Set cloudshell server details
+Set cloudshell server details:
 
 ```commandline
 usersync config cloudshell server localhost
 ```
 
-Set ldap details
+Set LDAP details:
 
 ```commandline
 usersync config ldap server 10.0.0.7
@@ -148,6 +173,7 @@ sample:
 ```commandline
 usersync mapping CN=nattigroup,DC=natticorp,DC=example,DC=com --csgroups <CSGROUP1>,<CSGROUP2>,<CSGROUP3>
 ```
+
 
 ### Configure Scheduled Task
 
