@@ -5,9 +5,6 @@ from cloudshell_user_sync import exceptions
 from cloudshell_user_sync.commands import set_config, set_credential, set_mapping, sync_groups
 
 
-# from cloudshell_user_sync.commands import run_scheduler, run_service  # DEPRECATED - leaving for reference
-
-
 @click.group()
 def cli():
     pass
@@ -70,22 +67,3 @@ def mapping(ldapgroup, csgroups, delete):
         click.secho(f"LDAP Group '{ldapgroup}' Deleted", fg="green")
     elif not any(params):
         set_mapping.view_mappings()
-
-
-"""
-DEPRECATING this command due to limitation of service not working properly in venv, only global python
-Recommended to implement "usersync run" into Windows Task Scheduler or Linux Cron Job 
-@cli.command()
-@click.argument("action", required=True, type=click.Choice(["install", "update", "start"], case_sensitive=True))
-def service(action):
-    click.echo(f"Running service '{action}' action")
-    run_service.run_service_flow()
-"""
-
-"""
-DEPRECATING this command as running a scheduled loop will waste resources while sleeping in between jobs
-Recommended to implement "usersync run" into Windows Task Scheduler or Linux Cron Job on host server
-@cli.command()
-def runscheduler():
-    run_scheduler.run_scheduled_jobs()
-"""
