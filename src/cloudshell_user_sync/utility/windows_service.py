@@ -1,3 +1,6 @@
+"""
+DEPRECATED - recommended to schedule jobs via OS scheduler (Task Scheduler / Cron)
+"""
 import socket
 
 import servicemanager

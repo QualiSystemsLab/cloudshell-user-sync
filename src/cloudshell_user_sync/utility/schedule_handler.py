@@ -1,4 +1,7 @@
 """
+DEPRECATED - leaving for reference
+The original idea was to have cross-platform scheduler
+More efficient to schedule jobs via OS and save resources on needless sleeps
 https://github.com/dbader/schedule
 """
 import time

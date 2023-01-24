@@ -1,3 +1,6 @@
+"""
+DEPRECATED - leaving for reference
+"""
 import platform
 import sys
 
