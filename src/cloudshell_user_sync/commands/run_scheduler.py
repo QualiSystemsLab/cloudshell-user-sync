@@ -1,3 +1,6 @@
+"""
+DEPRECATED - leaving for reference
+"""
 from cloudshell_user_sync.utility import config_handler, path_helper, safe_echo
 from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
 from cloudshell_user_sync.utility.schedule_handler import ScheduleHandler
