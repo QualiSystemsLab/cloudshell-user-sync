@@ -7,9 +7,7 @@
 A CLI tool to Sync LDAP / Active Directory Groups with Cloudshell groups.
 This package will pull LDAP data, compare state of cloudshell group, and add/remove users to sync the groups.
 
-Recommended to run job with OS level scheduler such as
-[Windows Task Scheduler](https://www.windowscentral.com/how-create-automated-task-using-task-scheduler-windows-10)
-or [Linux Cron Job](https://www.freecodecamp.org/news/cron-jobs-in-linux/).
+Sync job can be run as scheduled cron job, windows task, or wrapped into linux / windows service.
 
 ### Important Notes
 
@@ -178,7 +176,8 @@ usersync mapping CN=nattigroup,DC=natticorp,DC=example,DC=com --csgroups <CSGROU
 
 To set command to run automatically with OS level scheduler.
 
-Get path to "usersync.exe" executable installed in venv and schedule the `run` command
+- Get path to "usersync.exe" executable installed in venv and schedule the `run` command
+- Set logon for task with same user that set credentials with `usersync credential` command
 
 ```commandline
 path-to-usersync.exe run
@@ -198,8 +197,10 @@ Configure according to [article](https://www.freecodecamp.org/news/cron-jobs-in-
 Run scheduler uses the schedule module to run job infinitely at configured frequency.
 
 - Set the job frequency seconds in config
+- set credentials via cli `usersync credential`
 - configure the `runscheduler` command into [nssm](https://nssm.cc/)
   or [systemd](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
+- Set service logon as same user that configured the credentials (requirement for keyring module to work properly)
 - Alternatively, for windows, see the python [util install](util/windows_service.py) script option
 - usersync.exe will be installed inside python/Scripts of python environment
 
