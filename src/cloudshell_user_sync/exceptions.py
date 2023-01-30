@@ -27,3 +27,7 @@ class CloudshellSyncGroupsException(CloudshellUserSyncBaseException):
 
 class ConfigLoadError(CloudshellUserSyncBaseException):
     pass
+
+
+class ScheduledJobError(CloudshellUserSyncBaseException):
+    pass

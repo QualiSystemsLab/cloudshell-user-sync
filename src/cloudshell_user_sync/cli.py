@@ -2,7 +2,7 @@ import click
 import pkg_resources
 
 from cloudshell_user_sync import exceptions
-from cloudshell_user_sync.commands import set_config, set_credential, set_mapping, sync_groups
+from cloudshell_user_sync.commands import run_scheduler, set_config, set_credential, set_mapping, sync_groups
 
 
 @click.group()
@@ -20,6 +20,12 @@ def version():
 def run():
     """Pull LDAP Data and sync to Cloudshell"""
     sync_groups.sync_groups_flow()
+
+
+@cli.command()
+def runscheduler():
+    """Run sync on infinite scheduler"""
+    run_scheduler.run_scheduled_jobs()
 
 
 @cli.command()

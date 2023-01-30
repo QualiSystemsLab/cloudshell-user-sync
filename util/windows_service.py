@@ -1,15 +1,19 @@
 """
-DEPRECATED - recommended to schedule jobs via OS scheduler (Task Scheduler / Cron)
+helper python script to install service
+- in global python server `pip install cloudshell-user-sync', and `pip install pywin32`
+- run `python windows_service.py install`
+- set credentials via usersync cli
+- set service logon credentials to be same windows user as one that set credentials
+- start service
 """
 import socket
 
-import servicemanager
+import servicemanager  # pip install pywin32
 import win32event
 import win32service
 import win32serviceutil
 
-from cloudshell_user_sync.utility.rotating_log_handler import get_rotating_logger
-from cloudshell_user_sync.utility.schedule_handler import ScheduleHandler
+from cloudshell_user_sync.utility.schedule_handler import ScheduleHandler  # pip install cloudshell-user-sync
 
 
 class CloudshellSyncWinService(win32serviceutil.ServiceFramework):
@@ -33,8 +37,8 @@ class CloudshellSyncWinService(win32serviceutil.ServiceFramework):
         win32serviceutil.ServiceFramework.__init__(self, args)
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         socket.setdefaulttimeout(60)
-        self.logger = get_rotating_logger()
         self.schedule_handler = ScheduleHandler()
+        self.logger = self.schedule_handler.logger
         self.logger.debug("Init Service")
 
     def SvcStop(self):

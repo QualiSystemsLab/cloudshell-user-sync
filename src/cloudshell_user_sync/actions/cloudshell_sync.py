@@ -125,7 +125,6 @@ def sync_cloudshell_groups(api: CloudShellAPISession, import_data_list: List[Imp
 def ldap_pull_cloudshell_sync(
     api: CloudShellAPISession, ldap_handler: Ldap3Handler, ldap_mappings: List[LdapGroupsMapping], logger: logging.Logger
 ):
-
     # start master timer
     master_start = default_timer()
     ldap_pull_msg = "Starting LDAP Query..."
