@@ -36,17 +36,6 @@ Install with pip or download from Github releases
 pip install cloudshell-user-sync
 ```
 
-Recommended to install into dedicated [venv](https://docs.python.org/3/library/venv.html)
-
-```commandline
-mkdir user-sync-venv
-cd user-sync-venv
-venv .
-cd Scripts
-activate
-pip install cloudshell-user-sync
-```
-
 ### Commands
 
 ```commandline
