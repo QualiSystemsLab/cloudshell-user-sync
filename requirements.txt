@@ -4,6 +4,3 @@ click
 schedule
 dacite
 keyring
-
-# windows only
-pywin32

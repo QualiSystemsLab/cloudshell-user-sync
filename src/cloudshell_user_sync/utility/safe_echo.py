@@ -1,5 +1,6 @@
 """
-this module exists because click.echo throws exception when job is running as service
+This module exists because `click.echo` throws exception when job is running as service.
+Catching and ignoring those errors.
 """
 import click
 

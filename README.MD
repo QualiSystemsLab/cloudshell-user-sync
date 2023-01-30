@@ -103,30 +103,30 @@ View current config state by running `usersync config`:
 
 ```json
 {
-    "service_config": {
-        "job_frequency_seconds": 30,
-        "log_level": "DEBUG"
-    },
-    "cloudshell_details": {
-        "user": "admin",
-        "password": "************",
-        "server": "192.168.85.114",
-        "domain": "Global"
-    },
-    "ldap_details": {
-        "user_dn": "CN=Administrator,CN=Users,DC=testcorp,DC=example,DC=com",
-        "password": "************",
-        "server": "192.168.85.115",
-        "base_dn": "DC=testcorp,DC=example,DC=com"
-    },
-    "ldap_mappings": [
-        {
-            "ldap_dn": "CN=testgroup,DC=testcorp,DC=example,DC=com",
-            "cloudshell_groups": [
-                "QA"
-            ]
-        }
-    ]
+  "service_config": {
+    "job_frequency_seconds": 30,
+    "log_level": "DEBUG"
+  },
+  "cloudshell_details": {
+    "user": "admin",
+    "password": "************",
+    "server": "192.168.85.114",
+    "domain": "Global"
+  },
+  "ldap_details": {
+    "user_dn": "CN=Administrator,CN=Users,DC=testcorp,DC=example,DC=com",
+    "password": "************",
+    "server": "192.168.85.115",
+    "base_dn": "DC=testcorp,DC=example,DC=com"
+  },
+  "ldap_mappings": [
+    {
+      "ldap_dn": "CN=testgroup,DC=testcorp,DC=example,DC=com",
+      "cloudshell_groups": [
+        "QA"
+      ]
+    }
+  ]
 }
 ```
 
@@ -174,12 +174,11 @@ sample:
 usersync mapping CN=nattigroup,DC=natticorp,DC=example,DC=com --csgroups <CSGROUP1>,<CSGROUP2>,<CSGROUP3>
 ```
 
-
 ### Configure Scheduled Task
 
 To set command to run automatically with OS level scheduler.
 
-Get path to "usersync.exe" executable installed in venv and schedule run
+Get path to "usersync.exe" executable installed in venv and schedule the `run` command
 
 ```commandline
 path-to-usersync.exe run
@@ -194,6 +193,22 @@ to [article](https://www.windowscentral.com/how-create-automated-task-using-task
 
 Configure according to [article](https://www.freecodecamp.org/news/cron-jobs-in-linux/)
 
+### Service creation
+
+Run scheduler uses the schedule module to run job infinitely at configured frequency.
+
+- Set the job frequency seconds in config
+- configure the `runscheduler` command into [nssm](https://nssm.cc/)
+  or [systemd](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
+- Alternatively, for windows, see the python [util install](util/windows_service.py) script option
+- usersync.exe will be installed inside python/Scripts of python environment
+
+Runscheduler command (give full path to exe)
+
+```commandline
+usersync.exe runscheduler
+```
+
 ### Logs
 
 Both manual runs and scheduled runs log to the same rotating log file.
@@ -205,11 +220,12 @@ Both manual runs and scheduled runs log to the same rotating log file.
 
 ### Dependencies
 
+- `cloudshell-automation-api` to update cloudshell groups
 - [LDAP3](https://github.com/cannatag/ldap3) for pulling source LDAP/AD data
 - [Schedule](https://github.com/dbader/schedule) as cross-platform cron-like scheduler
 - [Keyring](https://github.com/philipn/python-keyring-lib) to store credentials in OS
-- [Pywin32](https://github.com/mhammond/pywin32) - windows service installer
-- `cloudshell-automation-api` to update cloudshell groups
+- [Dacite](https://github.com/konradhalas/dacite) for json to dataclass conversion
+- [Pywin32](https://github.com/mhammond/pywin32) - windows service installer util script
 
 ### License
 
