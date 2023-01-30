@@ -40,11 +40,12 @@ pip install cloudshell-user-sync
 
 ```commandline
 Commands:
-  config      View or Set Config - Pass no params to view config
-  credential  Set Credentials For Cloudshell and LDAP           
-  mapping     Set LDAP group --> Cloudshell Groups Mapping      
-  run         Pull LDAP Data and sync to Cloudshell
-  version     Display CLI version
+  config        View or Set Config - Pass no params to view config
+  credential    Set Credentials For Cloudshell and LDAP
+  mapping       Set LDAP group --> Cloudshell Groups Mapping
+  run           Pull LDAP Data and sync to Cloudshell
+  runscheduler  Run sync on infinite scheduler
+  version       Display CLI version
 ```
 
 ### Basic Usage
